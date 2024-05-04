@@ -3,6 +3,7 @@ import json
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
+from common.enums import Permission
 from common.models import User
 from tests.base import BaseTestCase
 
@@ -92,7 +93,9 @@ class TestUserRoutes(BaseTestCase):
     def test_update_user(self, user_client: TestClient, session: Session):
         username = "jane.doe"
         password = "password"
-        role = self.create_role_with_permission(session=session, role_name="admin", permission_names=["update_user"])
+        role = self.create_role_with_permission(
+            session=session, role_name="admin", permissions=[Permission.CAN_UPDATE_USER]
+        )
         token = self.create_user_and_get_auth_token(
             client=user_client, session=session, username=username, password=password, role=role
         )
@@ -108,7 +111,17 @@ class TestUserRoutes(BaseTestCase):
             "first_name": "Anthony",
             "last_name": "Gonzalves",
             "username": "jane.doe",
-            "roles": [{"name": "admin", "permissions": [{"name": "update_user", "description": "update_user"}]}],
+            "roles": [
+                {
+                    "name": "admin",
+                    "permissions": [
+                        {
+                            "name": Permission.CAN_UPDATE_USER,
+                            "description": Permission.CAN_UPDATE_USER.description,
+                        }
+                    ],
+                }
+            ],
         }
         response_json = response.json()
         print(response_json)
@@ -136,7 +149,9 @@ class TestUserRoutes(BaseTestCase):
         assert response.status_code == 403  # forbidden
 
     def test_delete_user(self, user_client: TestClient, session: Session):
-        role = self.create_role_with_permission(session=session, role_name="admin", permission_names=["delete_user"])
+        role = self.create_role_with_permission(
+            session=session, role_name="admin", permissions=[Permission.CAN_DELETE_USER]
+        )
         auth_token = self.create_user_and_get_auth_token(
             client=user_client, session=session, username="jane.doe", password="password", role=role
         )
@@ -150,7 +165,13 @@ class TestUserRoutes(BaseTestCase):
         assert not user.is_active, "User should be inactive"  # type: ignore
 
     def test_delete_user__no_permission__forbidden(self, user_client: TestClient, session: Session):
-        role = self.create_role_with_permission(session=session, role_name="admin", permission_names=["update_user"])
+        role = self.create_role_with_permission(
+            session=session,
+            role_name="admin",
+            permissions=[
+                Permission.CAN_UPDATE_USER,
+            ],
+        )
         auth_token = self.create_user_and_get_auth_token(
             client=user_client, session=session, username="jane.doe", password="password", role=role
         )

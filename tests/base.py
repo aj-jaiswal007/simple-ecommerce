@@ -3,16 +3,14 @@ from typing import Optional
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
+from common.enums import Permission as PermissionEnum
 from common.models import Permission, Role, User
 
 
 class BaseTestCase:
-    def create_role_with_permission(self, session: Session, role_name: str, permission_names: list[str]) -> Role:
-        permissions = [
-            Permission(name=permission_name, description=permission_name) for permission_name in permission_names
-        ]
+    def create_role_with_permission(self, session: Session, role_name: str, permissions: list[PermissionEnum]) -> Role:
+        permissions = [Permission(name=permission, description=permission.description) for permission in permissions]
         role = Role(name=role_name, permissions=permissions)  # type: ignore
-        session.add_all(permissions)
         session.add(role)
         session.commit()
         return role
@@ -28,7 +26,7 @@ class BaseTestCase:
         create_response = client.post(
             "/users/",
             json={
-                "first_name": "",
+                "first_name": username,
                 "last_name": "",
                 "username": username,
                 "password": password,

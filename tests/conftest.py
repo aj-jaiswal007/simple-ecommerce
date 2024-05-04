@@ -4,6 +4,7 @@ from sqlalchemy import StaticPool, create_engine
 from sqlalchemy.orm import Session
 
 from common.database import Base, get_db
+from product.main import app as product_app
 from user.main import app as user_app
 
 
@@ -25,3 +26,15 @@ def user_client_fixture(session: Session):
     client = TestClient(user_app)
     yield client
     user_app.dependency_overrides.clear()
+
+
+@pytest.fixture(name="product_client")
+def product_client_fixture(session: Session):
+    def get_session_override():
+        return session
+
+    product_app.dependency_overrides[get_db] = get_session_override
+
+    client = TestClient(product_app)
+    yield client
+    product_app.dependency_overrides.clear()

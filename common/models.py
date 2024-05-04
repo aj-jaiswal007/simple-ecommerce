@@ -1,7 +1,8 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 from common.database import AuditMixin, Base
+from common.enums import Permission as PermissionEnum
 
 
 class Role(Base):
@@ -17,7 +18,7 @@ class Permission(Base):
     __tablename__ = "permission"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, unique=True, index=True)
+    name = Column(Enum(PermissionEnum), unique=True, index=True)
     description = Column(String)
     roles = relationship("Role", secondary="role_permission", back_populates="permissions")
 

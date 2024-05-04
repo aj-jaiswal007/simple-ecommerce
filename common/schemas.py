@@ -3,12 +3,15 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict
 
 from common.database import AuditBase
+from common.enums import Permission
 
 
 class UserBase(BaseModel):
     first_name: str
     last_name: str
     username: str
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserCreate(UserBase):
@@ -27,7 +30,7 @@ class RoleBase(BaseModel):
 
 
 class PermissionBase(BaseModel):
-    name: str
+    name: Permission
     description: str
 
     model_config = ConfigDict(from_attributes=True)

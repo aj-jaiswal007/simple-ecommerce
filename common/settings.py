@@ -10,6 +10,10 @@ class Settings(BaseSettings):
     database_host: str = "localhost"
     database_port: int = 5432
 
+    # User Service
+    user_service_base_url: str
+    product_service_base_url: str
+
     # password hashing
     secret_key: str
     algorithm: str = "HS256"

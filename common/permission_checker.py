@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 
 from common.authentication import get_current_user_token
+from common.enums import Permission
 from common.schemas import TokenData
 
 
@@ -14,8 +15,8 @@ class PermissionChecker:
     - Depends(PermissionChecker(<permission_name>))
     """
 
-    def __init__(self, permission_name: str):
-        self.permission_name = permission_name
+    def __init__(self, permission: Permission):
+        self.permission = permission
 
     def __call__(self, token_data: Annotated[TokenData, Depends(get_current_user_token)]):
         all_allowed_permissions = set()
@@ -25,7 +26,7 @@ class PermissionChecker:
             for permission in role.permissions:
                 all_allowed_permissions.add(permission.name)
 
-        if self.permission_name not in all_allowed_permissions:
+        if self.permission not in all_allowed_permissions:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="You do not have permission to access this resource.",

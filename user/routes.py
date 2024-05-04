@@ -12,7 +12,7 @@ from common.authentication import (
 )
 from common.database import get_db
 from common.logger import BoundLogger, get_logger
-from common.permission_checker import PermissionChecker
+from common.permission_checker import Permission, PermissionChecker
 from common.settings import Settings, get_settings
 
 from .manager import UserManager
@@ -76,7 +76,7 @@ def get_user(current_user: Annotated[models.User, Depends(get_current_active_use
 
 @authenticated_routes.put(
     "/users/me",
-    dependencies=[Depends(PermissionChecker("update_user"))],
+    dependencies=[Depends(PermissionChecker(Permission.CAN_UPDATE_USER))],
 )
 def update_user(
     user_data: schemas.UserUpdate,
@@ -88,7 +88,7 @@ def update_user(
 
 @authenticated_routes.delete(
     "/users/me",
-    dependencies=[Depends(PermissionChecker("delete_user"))],
+    dependencies=[Depends(PermissionChecker(Permission.CAN_DELETE_USER))],
 )
 def delete_user(
     current_user: Annotated[models.User, Depends(get_current_active_user)],
