@@ -17,6 +17,8 @@ cp .env.example .env
 
 - Generate migrations:
 ```bash
+pip install alembic
+alembic init alembic
 alembic revision -m “First commit”
 ```
 
