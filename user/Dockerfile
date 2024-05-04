@@ -17,4 +17,4 @@ COPY ./common /code/common
 
 
 # running server
-CMD ["uvicorn", "main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "user.main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8080"]
