@@ -15,7 +15,7 @@ class Role(Base):
 
 
 class Permission(Base):
-    __tablename__ = "permission"
+    __tablename__ = "ecom_permission"
 
     id = Column(Integer, primary_key=True)
     name = Column(Enum(PermissionEnum), unique=True, index=True)
@@ -28,7 +28,7 @@ class RolePermission(Base):
 
     id = Column(Integer, primary_key=True)
     role_id = Column(ForeignKey("role.id", ondelete="CASCADE"))
-    permission_id = Column(ForeignKey("permission.id", ondelete="CASCADE"))
+    permission_id = Column(ForeignKey("ecom_permission.id", ondelete="CASCADE"))
 
 
 class User(AuditMixin, Base):

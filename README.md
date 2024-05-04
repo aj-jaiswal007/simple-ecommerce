@@ -17,10 +17,10 @@ cp .env.example .env
 
 - Generate migrations:
 ```bash
-pip install alembic
 alembic init alembic
-alembic revision -m “First commit”
+alembic revision --autogenerate -m "init"
 ```
+- NOTE: If running alembic command outside docker env, then change the `DATABASE_HOST` env variable to `localhost`
 
 - Run migrations:
 ```bash
@@ -28,6 +28,7 @@ alembic upgrade head
 ```
 
 - Start the FastAPI server: (Project uses makefile so ensure make cli is installed)
+- Make sure `DATABASE_HOST` value is set to `db` here
 ```bash
 make restart
 ```
