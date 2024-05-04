@@ -17,7 +17,7 @@ cp .env.example .env
 
 - Generate migrations:
 ```bash
-alembic revision — autogenerate -m “First commit”
+alembic revision -m “First commit”
 ```
 
 - Run migrations:
