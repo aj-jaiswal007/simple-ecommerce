@@ -4,7 +4,7 @@ from sqlalchemy import Column, DateTime, Integer, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.sql import func
 
-from ecom.settings import Settings, get_settings
+from common.settings import Settings, get_settings
 
 
 def get_db_url(settings: Settings = get_settings()):

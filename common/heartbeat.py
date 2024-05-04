@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from ecom.common.logger import BoundLogger, get_logger
+from common.logger import BoundLogger, get_logger
 
 router = APIRouter()
 

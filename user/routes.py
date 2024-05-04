@@ -4,18 +4,18 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from ecom.common.database import get_db
-from ecom.common.logger import BoundLogger, get_logger
-from ecom.settings import Settings, get_settings
-
-from . import models, schemas
-from .authentication import (
+from common import models, schemas
+from common.authentication import (
     authenticate_user,
     create_access_token,
     get_current_active_user,
 )
+from common.database import get_db
+from common.logger import BoundLogger, get_logger
+from common.permission_checker import PermissionChecker
+from common.settings import Settings, get_settings
+
 from .manager import UserManager
-from .permission_checker import PermissionChecker
 
 public_routes = APIRouter()
 authenticated_routes = APIRouter(

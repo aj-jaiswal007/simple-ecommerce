@@ -2,8 +2,8 @@ from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
 
-from .authentication import get_current_user_token
-from .schemas import TokenData
+from common.authentication import get_current_user_token
+from common.schemas import TokenData
 
 
 class PermissionChecker:

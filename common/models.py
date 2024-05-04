@@ -1,7 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from ecom.common.database import AuditMixin, Base
+from common.database import AuditMixin, Base
 
 
 class Role(Base):

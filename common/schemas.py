@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
-from ecom.common.database import AuditBase
+from common.database import AuditBase
 
 
 class UserBase(BaseModel):

@@ -7,10 +7,9 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from ecom.common.database import get_db
-from ecom.settings import get_settings
-
-from . import models, schemas
+from common import models, schemas
+from common.database import get_db
+from common.settings import get_settings
 
 settings = get_settings()
 

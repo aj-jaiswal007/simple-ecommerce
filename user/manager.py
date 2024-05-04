@@ -1,7 +1,6 @@
-from ecom.common.base_manager import BaseManager
-
-from . import models, schemas
-from .authentication import get_password_hash
+from common import models, schemas
+from common.authentication import get_password_hash
+from common.base_manager import BaseManager
 
 
 class UserManager(BaseManager):

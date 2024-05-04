@@ -3,13 +3,13 @@ import json
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from ecom.auth.models import User
+from common.models import User
 from tests.base import BaseTestCase
 
 
 class TestUserRoutes(BaseTestCase):
-    def test_create_user(self, client: TestClient):
-        response = client.post(
+    def test_create_user(self, user_client: TestClient):
+        response = user_client.post(
             "/users/",
             json={
                 "first_name": "Jane",
@@ -32,9 +32,9 @@ class TestUserRoutes(BaseTestCase):
         response_json.pop("updated_at")
         assert response_json == expected_output_without_audit_fields
 
-    def test_get_token(self, client):
+    def test_get_token(self, user_client):
         # create a user
-        create_response = client.post(
+        create_response = user_client.post(
             "/users/",
             json={
                 "first_name": "Jane",
@@ -45,7 +45,7 @@ class TestUserRoutes(BaseTestCase):
         )
         assert create_response.status_code == 200
         # get the user
-        response = client.post(
+        response = user_client.post(
             "/token/",
             json={"username": "jane.doe", "password": "password"},
         )
@@ -53,9 +53,9 @@ class TestUserRoutes(BaseTestCase):
         response_json = response.json()
         assert "access_token" in response_json
 
-    def test_get_user(self, client):
+    def test_get_user(self, user_client):
         # create a user
-        create_response = client.post(
+        create_response = user_client.post(
             "/users/",
             json={
                 "first_name": "Jane",
@@ -66,13 +66,13 @@ class TestUserRoutes(BaseTestCase):
         )
         assert create_response.status_code == 200
         # get the user
-        token_response = client.post(
+        token_response = user_client.post(
             "/token/",
             json={"username": "jane.doe", "password": "password"},
         )
         assert token_response.status_code == 200
         token = token_response.json()["access_token"]
-        response = client.get(
+        response = user_client.get(
             "/users/me",
             headers={"Authorization": f"Bearer {token}"},
         )
@@ -89,15 +89,15 @@ class TestUserRoutes(BaseTestCase):
         response_json.pop("updated_at")
         assert response_json == expected_output_without_audit_fields
 
-    def test_update_user(self, client: TestClient, session: Session):
+    def test_update_user(self, user_client: TestClient, session: Session):
         username = "jane.doe"
         password = "password"
         role = self.create_role_with_permission(session=session, role_name="admin", permission_names=["update_user"])
         token = self.create_user_and_get_auth_token(
-            client=client, session=session, username=username, password=password, role=role
+            client=user_client, session=session, username=username, password=password, role=role
         )
 
-        response = client.put(
+        response = user_client.put(
             "/users/me",
             headers={"Authorization": f"Bearer {token}"},
             json={"first_name": "Anthony", "last_name": "Gonzalves", "username": username},
@@ -116,31 +116,31 @@ class TestUserRoutes(BaseTestCase):
         response_json.pop("updated_at")
         assert response_json == expected_output_without_audit_fields
 
-    def test_update_user__no_permission__forbidden(self, client: TestClient, session: Session):
+    def test_update_user__no_permission__forbidden(self, user_client: TestClient, session: Session):
         username = "jane.doe"
         password = "password"
 
         token = self.create_user_and_get_auth_token(
-            client=client,
+            client=user_client,
             session=session,
             username=username,
             password=password,
             role=None,  # no permission
         )
 
-        response = client.put(
+        response = user_client.put(
             "/users/me",
             headers={"Authorization": f"Bearer {token}"},
             json={"first_name": "Anthony", "last_name": "Gonzalves", "username": username},
         )
         assert response.status_code == 403  # forbidden
 
-    def test_delete_user(self, client: TestClient, session: Session):
+    def test_delete_user(self, user_client: TestClient, session: Session):
         role = self.create_role_with_permission(session=session, role_name="admin", permission_names=["delete_user"])
         auth_token = self.create_user_and_get_auth_token(
-            client=client, session=session, username="jane.doe", password="password", role=role
+            client=user_client, session=session, username="jane.doe", password="password", role=role
         )
-        response = client.delete(
+        response = user_client.delete(
             "/users/me",
             headers={"Authorization": f"Bearer {auth_token}"},
         )
@@ -149,12 +149,12 @@ class TestUserRoutes(BaseTestCase):
         user = session.query(User).filter(User.username == "jane.doe").first()
         assert not user.is_active, "User should be inactive"  # type: ignore
 
-    def test_delete_user__no_permission__forbidden(self, client: TestClient, session: Session):
+    def test_delete_user__no_permission__forbidden(self, user_client: TestClient, session: Session):
         role = self.create_role_with_permission(session=session, role_name="admin", permission_names=["update_user"])
         auth_token = self.create_user_and_get_auth_token(
-            client=client, session=session, username="jane.doe", password="password", role=role
+            client=user_client, session=session, username="jane.doe", password="password", role=role
         )
-        response = client.delete(
+        response = user_client.delete(
             "/users/me",
             headers={"Authorization": f"Bearer {auth_token}"},
         )

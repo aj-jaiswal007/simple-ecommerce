@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from ecom.auth.models import Permission, Role, User
+from common.models import Permission, Role, User
 
 
 class BaseTestCase:

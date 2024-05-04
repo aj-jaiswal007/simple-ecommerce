@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from ecom.common.database import get_db
+from common.database import get_db
 
 
 class BaseManager(ABC):
