@@ -13,14 +13,15 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# import all models so it's discoverable by Alembic
-from ecom.auth.models import *  # noqa
-
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from ecom.common.database import Base, get_db_url  # noqa
+from common.database import Base, get_db_url  # noqa
+
+# import all models so it's discoverable by Alembic
+from common.models import *  # noqa
+from product.models import *  # noqa
 
 target_metadata = Base.metadata
 
