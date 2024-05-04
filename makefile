@@ -4,10 +4,6 @@ restart:
 	docker-compose build
 	docker-compose up
 
-# Runs locally
-run:
-	uvicorn ecom.main:app --proxy-headers --host localhost --port 8080
-
 # Generates the migration
 generate:
 	export DATABASE_HOST=localhost && alembic revision --autogenerate -m "migration"
